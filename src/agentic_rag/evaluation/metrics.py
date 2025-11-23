@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import abc
-from typing import Iterable, Sequence, Set
+from typing import Iterable, Sequence
 from math import log2
 from ..retrieval import Query, RetrievedChunk
 
@@ -43,7 +43,7 @@ class NDCG(Metric):
         # DCG
         for i, chunk in enumerate(retrieved[: self.k]):
             if chunk.doc_id in relevant_set:
-                dcg += 1 / log2(i + 2)  # rank bắt đầu từ 1 → i+2
+                dcg += 1 / log2(i + 2)  
 
         # IDCG (ideal)
         for i in range(min(len(relevant_set), self.k)):
