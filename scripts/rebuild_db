@@ -1,0 +1,60 @@
+# scripts/rebuild_db.py
+import json
+import numpy as np
+from pathlib import Path
+import argparse
+from agentic_rag.retrieval.wordpress_retrieval import PgVectorRetriever
+
+def main():
+    parser = argparse.ArgumentParser(description="Restore DB from  corpus.jsonl + embedding file")
+    parser.add_argument(
+        "--embedding-file",
+        type=str,
+        required=True,
+        help="Path to  .npy  embedding (Eg: data/processed/embeddings_voyage-3.npy)"
+    )
+    parser.add_argument(
+        "--corpus-file",
+        type=str,
+        default="data/processed/corpus.jsonl",
+        help="Path to corpus.jsonl (default: data/processed/corpus.jsonl)"
+    )
+    args = parser.parse_args()
+
+    corpus_path = Path(args.corpus_file)
+    embed_path = Path(args.embedding_file)
+
+    if not corpus_path.exists():
+        print(f"Could not found  corpus: {corpus_path}")
+        print("Run  `make  ingest` first!")
+        exit(1)
+    if not embed_path.exists():
+        print(f"Could not found embedding file: {embed_path}")
+        print("Run: python scripts/embed_from_corpus.py --model voyage-ai/voyage-3")
+        exit(1)
+
+    print(f"Corpus: {corpus_path}")
+    print(f"Embedding: {embed_path}")
+
+    # Load corpus
+    chunks = []
+    for line in corpus_path.open(encoding="utf-8"):
+        obj = json.loads(line)
+        chunks.append(obj)
+
+    # Load embedding
+    embeddings = np.load(embed_path)
+
+    if len(chunks) != len(embeddings):
+        print(f"Num of chunks doest not matched: {len(chunks)} chunks vs {len(embeddings)} embeddings")
+        exit(1)
+
+    # Restore DB
+    retriever = PgVectorRetriever()
+    retriever.upsert_chunks(chunks, embeddings.tolist())
+
+    print(f"Completed ! Restored {len(chunks):,} chunks to pgvector")
+    
+
+if __name__ == "__main__":
+    main()

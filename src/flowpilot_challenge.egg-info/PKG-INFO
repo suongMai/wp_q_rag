@@ -1,0 +1,81 @@
+Metadata-Version: 2.4
+Name: flowpilot-challenge
+Version: 0.1.0
+Summary: Challenge scaffold
+Author: Zoner
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: typer[all]>=0.12
+Requires-Dist: pydantic>=2.7
+Requires-Dist: pydantic-settings>=2.2
+Requires-Dist: python-dotenv>=1.0
+Requires-Dist: rich>=13.7
+Requires-Dist: structlog>=24.1
+Requires-Dist: orjson>=3.10
+Requires-Dist: datasets>=2.18
+Requires-Dist: transformers>=4.40
+Requires-Dist: sentence-transformers>=2.6
+Requires-Dist: accelerate>=0.28
+Provides-Extra: dev
+Requires-Dist: pytest>=8.2; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.23; extra == "dev"
+Requires-Dist: pytest-cov>=5.0; extra == "dev"
+Requires-Dist: mypy>=1.10; extra == "dev"
+Requires-Dist: ruff>=0.4; extra == "dev"
+Requires-Dist: types-requests; extra == "dev"
+Requires-Dist: fastapi; extra == "dev"
+Requires-Dist: numpy; extra == "dev"
+Requires-Dist: bs4; extra == "dev"
+
+# RAG Retrieval Pipeline Challenge
+
+Build an AI agent to find similarly results base bon user input text
+The data set to test is WordPress QA dataset from hugging face: https://huggingface.co/datasets/mteb/qadupstack-wordpress
+
+
+
+## Repository Structure
+```
+.
+├── Makefile                  
+├── docker-compose.yml        
+├── pyproject.toml            
+├── src/agentic_rag/          
+└── scripts/download_dataset.py
+```
+
+
+Reorganize as needed, but preserve the CLI commands for reproducibility.
+
+## Setup and Execution
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+make compose-up        
+make data              
+make ingest            
+make agent             
+```
+
+Stop the pgvector service with `make compose-down`. If the dataset requires authentication, export `HF_TOKEN` before downloading.
+
+## Configuration
+
+Specify your implementations via environment variables or `.env`:
+```bash
+
+export AGENTIC_RAG_INGESTION_CLASS=agentic_rag.data.wordpress.WordPressPipLine
+export AGENTIC_RAG_AGENT_CONTROLLER_CLASS=agentic_rag.agent.controller.WordPressAgentController
+export AGENTIC_RAG_EVALUATOR_CLASS=agentic_rag.evaluation.runner.WordPressEvaluator
+export AGENTIC_RAG_DATABASE__USER=db_user
+export AGENTIC_RAG_DATABASE__PASSWORD=db_pass
+export AGENTIC_RAG_DATABASE__DBNAME=db_name
+export AGENTIC_RAG_DATABASE_URL=postgresql+psycopg2://db_user:db_pass@localhost:5432/db_name
+```
+
+## Submission
+
+Provide a repository link with clear execution instructions. Include a brief architectural overview that addresses your design decisions: embedding model selection, chunking strategy, pgvector schema and indexing approach, known limitations, and potential improvements. If you deviated from pgvector, explain the alternative and its trade-offs.
+
+Additional artifacts (tests, documentation, tooling) are at your discretion.

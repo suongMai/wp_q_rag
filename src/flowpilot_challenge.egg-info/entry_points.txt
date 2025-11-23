@@ -1,0 +1,2 @@
+[console_scripts]
+agentic-rag = agentic_rag.cli:app
