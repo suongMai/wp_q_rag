@@ -95,7 +95,7 @@ class WordPressPipLine(BaseIngestionPipeline):
             if len(clean_text) < 50:
                 continue
 
-            # each chunk from 450 recs
+            # each chunk from 450 words
             words = clean_text.split()
             
             for i in range(0, len(words), 450):
