@@ -1,6 +1,6 @@
 # RAG Retrieval Pipeline Challenge
 
-Build an AI agent to find similarly results base bon user input text
+Build an AI agent to find similarly results base on user input text
 The data set to test is WordPress QA dataset from hugging face: https://huggingface.co/datasets/mteb/qadupstack-wordpress
 
 
